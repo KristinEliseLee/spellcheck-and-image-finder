@@ -1,0 +1,8 @@
+.env
+NodeJSWebApp*
+node_modules
+build
+ndp-debug.log
+.DS_Store
+bin
+obj
