@@ -1,16 +1,15 @@
 'use strict';
 
-const dotenvLoad = require('dotenv-load');
-dotenvLoad();
 const path = require('path');
 const express = require('express');
 const https = require('https');
-
 const app = express();
+const dotenvLoad = require('dotenv-load');
+dotenvLoad();
 const AzureKey = process.env.AZURE_KEY;
 const staticPath = path.join(__dirname, '/');
 
-
+/* Sends an HTTPS request to bing image search, returns JSON of 'value' part of the response data*/
 function useAzureApi(req, res) {
     const host = 'api.cognitive.microsoft.com';
     const path = '/bing/v7.0/images/search';
@@ -47,4 +46,5 @@ const server = app.listen(app.get('port'), function () {
     console.log('listening');
 });
 
+/* Route for handling search query. */
 app.get("/search", useAzureApi)

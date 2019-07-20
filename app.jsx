@@ -3,15 +3,17 @@ const ReactDOM = require('react-dom');
 import wordFile from './wordFile.js';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import 'bootstrap';
-import './node_modules/bootstrap/dist/css/bootstrap.min.css';
 
-const wordSet = new Set(wordFile.split(/\n/))
+/*wordSet is used just to see if word already exists before trying to fix any vowels.*/
+const wordSet = new Set(wordFile.split(/\n/)) 
 
+/*used to open an new tab with the target link*/
 function openInNewTab(url) {
-        var win = window.open(url, '_blank');
+        const win = window.open(url, '_blank');
         win.focus();
 }
 
+/*Takes out anything that is not a-z, case-insensitive*/
 function removeNonLetters(word) {
     let newWord = ''
     for (let letter of word) {
@@ -22,7 +24,9 @@ function removeNonLetters(word) {
     newWord.toLowerCase();
     return newWord;
 }
-function makeRegEx(word) {
+
+/*Creates the regexp for the word, adding newline characters at begining and end, replacing vowels with '.'*/
+function makeRegExp(word) {
     let newWord = '\n'
     for (let letter of word) {
         if (new Set(['a', 'e', 'i', 'o', 'u']).has(letter)){
@@ -38,6 +42,7 @@ function makeRegEx(word) {
     return new RegExp(newWord, 'i');
 }
 
+/*Checks to see if word is in wordSet, if not word is turned into regexp and first match is returned. if no match found, original word returned*/
 function getWordMatch(word) {
     
     word = removeNonLetters(word);
@@ -45,7 +50,7 @@ function getWordMatch(word) {
         return word;
     }
 
-    const wordRegExp = makeRegEx(word);
+    const wordRegExp = makeRegExp(word);
 
     const answers = wordFile.match(wordRegExp);
     if (answers !== null) {
@@ -55,35 +60,35 @@ function getWordMatch(word) {
     return word;
 }
 
+/*Renders a searchbox and submit button*/
 function SearchBox(props) {
     return (
-        <>
-           
-                <input type='text' id='Searchbox' value={props.query} onChange={props.handleChange}/>
-                <button id="Searchbutton" onClick={props.handleSearch}>Search</button>
-
-        </>
-            )
+        <form onSubmit={props.handleSearch}>
+            <input type='text' id='Searchbox' value={props.query} onChange={props.handleChange}/>
+            <input type='submit' id="Searchbutton" value='Search'/>
+        </form>
+    )
 }
 
+/*Renders a Modal when image selected*/
 function MyModal(props) {
-    let hostURL = props.image.hostPageDisplayUrl
-    console.log(hostURL)
+    let hostURL = props.image.hostPageDisplayUrl;
     return (
-            <Modal isOpen={props.show} toggle={props.toggleModal}>
-                <Button color="danger" onClick={props.toggleModal} id='close-modal'>Close</Button>
-                <ModalHeader>{props.image.name}</ModalHeader>
-                <ModalBody>
-                <img src={props.image['contentUrl']} width='100%' />
-                <a onClick={() => { openInNewTab(hostURL) }}>Origin</a>
-                </ModalBody>
-            </Modal>
+        <Modal isOpen={props.show} toggle={props.toggleModal}>
+            <Button color="danger" onClick={props.toggleModal} id='close-modal'>Close</Button>
+            <ModalHeader>{props.image.name}</ModalHeader>
+            <ModalBody>
+            <img src={props.image['contentUrl']} width='100%' />
+            <a onClick={() => { openInNewTab(hostURL) }}>Origin</a>
+            </ModalBody>
+        </Modal>
     )
     
 }
 
+/*Renders all search result images*/
 function SearchResults(props) {
-    const allresults = []
+    const allresults = [];
     let i = 0
     for (let result of props.results) {
         allresults.push(
@@ -98,6 +103,8 @@ function SearchResults(props) {
     );
 
 }
+
+/*Main react component. Renders whole page.*/
  class App extends React.Component {
     constructor(props) {
         super(props);
@@ -108,12 +115,16 @@ function SearchResults(props) {
         this.toggleModal = this.toggleModal.bind(this)
      }
 
+    /* Manages typing in the input field*/
      handleChange(event) {
          this.setState({ query: event.target.value })
 
      }
+
+    /*Manages submitting search form*/
      handleSearch(event) {
-         const answer = []
+         event.preventDefault();
+         const answer = [];
          for (let word of this.state.query.split(/\s+/)) {
              answer.push(getWordMatch(word));
          }
@@ -126,6 +137,8 @@ function SearchResults(props) {
                  this.setState({ results: data });
          });
      }
+
+    /*Handles clicking on an image or closing the modal window*/
      toggleModal(event) {
          if (event.target.id && isNaN(event.target.id) === false) {
              const imgNum = event.target.id
