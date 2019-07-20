@@ -171,6 +171,7 @@ function getWordMatch(word) {
 
 function SearchBox(props) {
   return React.createElement("form", {
+    className: "text-center justify-content-center",
     onSubmit: props.handleSearch
   }, React.createElement("input", {
     type: "text",
@@ -292,11 +293,11 @@ class App extends React.Component {
       show: this.state.showModal,
       image: this.state.mainImage,
       toggleModal: this.toggleModal
-    }), React.createElement(SearchBox, {
+    }), React.createElement("br", null), React.createElement("br", null), React.createElement(SearchBox, {
       query: this.state.query,
       handleChange: this.handleChange,
       handleSearch: this.handleSearch
-    }), React.createElement("div", null, React.createElement(SearchResults, {
+    }), React.createElement("br", null), React.createElement("br", null), React.createElement("div", null, React.createElement(SearchResults, {
       results: this.state.results,
       toggleModal: this.toggleModal
     })));

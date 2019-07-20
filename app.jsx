@@ -63,7 +63,7 @@ function getWordMatch(word) {
 /*Renders a searchbox and submit button*/
 function SearchBox(props) {
     return (
-        <form onSubmit={props.handleSearch}>
+        <form className="text-center justify-content-center" onSubmit={props.handleSearch}>
             <input type='text' id='Searchbox' value={props.query} onChange={props.handleChange}/>
             <input type='submit' id="Searchbutton" value='Search'/>
         </form>
@@ -154,8 +154,12 @@ function SearchResults(props) {
         return (
             <>
                 <MyModal show={this.state.showModal} image={this.state.mainImage} toggleModal={this.toggleModal} />
+                <br />
+                <br />
                 <SearchBox query={this.state.query} handleChange={this.handleChange}
                     handleSearch={this.handleSearch} />
+                <br />
+                <br />
                 <div>
                     <SearchResults results={this.state.results} toggleModal={this.toggleModal} />
                 </div>
